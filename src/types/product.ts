@@ -74,15 +74,3 @@ export interface BreadcrumbItem {
   label: string;
   href?: string;
 }
-
-export interface Collection {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  banner?: string;
-  tagline?: string;
-  subcollections?: SubCollection[];
-  icon?: string;
-}
