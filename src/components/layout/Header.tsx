@@ -12,6 +12,7 @@ const navLinks = [
   { name: 'Collections', href: '/collections', hasMegaMenu: true },
   { name: 'New Arrivals', href: '/new-arrivals', hasMegaMenu: false },
   { name: 'Best Sellers', href: '/best-sellers', hasMegaMenu: false },
+  { name: 'Build Your Look', href: '/build-your-look', hasMegaMenu: false },
 ];
 
 const Header: React.FC = () => {

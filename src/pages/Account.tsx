@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
-import { User, Package, MapPin, Heart, LogOut, Mail, Lock } from 'lucide-react';
+import { User, Package, MapPin, Heart, LogOut, Mail, Lock, Brain, ShieldCheck } from 'lucide-react';
+import { useWardrobeMemory } from '@/context/WardrobeMemoryContext';
 import { motion } from 'framer-motion';
 
 const Account: React.FC = () => {
@@ -9,6 +10,7 @@ const Account: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { memory, setOptOut } = useWardrobeMemory();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,11 +162,44 @@ const Account: React.FC = () => {
             </motion.div>
           </div>
 
+          {/* Wardrobe Memory Privacy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 bg-card border border-border rounded-sm p-6"
+          >
+            <div className="flex items-start gap-4">
+              <Brain size={28} className="text-accent flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="text-lg font-medium mb-1">My Wardrobe Memory</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  We track your browsing and purchase history to personalize recommendations and stylist suggestions. Your data is stored locally on your device and never shared.
+                </p>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 border border-border">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-accent" />
+                    <span className="text-sm font-medium">Personalization</span>
+                  </div>
+                  <button
+                    onClick={() => setOptOut(!memory.optedOut)}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${memory.optedOut ? 'bg-muted' : 'bg-accent'}`}
+                  >
+                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-card shadow transition-transform ${memory.optedOut ? 'left-0.5' : 'left-[22px]'}`} />
+                  </button>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-2">
+                  {memory.optedOut ? 'Personalization is off. Recommendations will be generic.' : `Tracking ${memory.viewedItems.length} viewed items · ${memory.purchasedItems.length} purchases`}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-8"
+            transition={{ delay: 0.4 }}
+            className="mt-6"
           >
             <button
               onClick={() => setIsLoggedIn(false)}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronDown, Heart, User, Sparkles, TrendingUp, Tag } from 'lucide-react';
+import { ChevronRight, ChevronDown, Heart, User, Sparkles, TrendingUp, Tag, Wand2 } from 'lucide-react';
 import { collectionCategories, curatedCollections } from '@/data/collections';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -84,6 +84,14 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                   >
                     <Tag size={16} className="text-accent" />
                     <span className="text-sm font-medium">Under ₹999</span>
+                  </Link>
+                  <Link
+                    to="/build-your-look"
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-sm bg-accent/10 hover:bg-accent/20 transition-colors border border-accent/20"
+                  >
+                    <Wand2 size={16} className="text-accent" />
+                    <span className="text-sm font-medium">Build Your Look</span>
                   </Link>
                 </div>
               </div>
