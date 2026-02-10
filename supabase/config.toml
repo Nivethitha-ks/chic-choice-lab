@@ -1,0 +1,4 @@
+project_id = "gujrrxrquipcooyuzfua"
+
+[functions.stylist-chat]
+verify_jwt = false

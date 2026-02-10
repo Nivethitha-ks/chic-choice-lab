@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CartDrawer from '../cart/CartDrawer';
+import ElevateStylist from '../chat/ElevateStylist';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="flex-1">{children}</main>
       <Footer />
       <CartDrawer />
+      <ElevateStylist />
     </div>
   );
 };

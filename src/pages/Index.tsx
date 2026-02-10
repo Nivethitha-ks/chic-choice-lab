@@ -5,6 +5,7 @@ import CollectionsGrid from '@/components/home/CollectionsGrid';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
+import RecommendedForYou from '@/components/home/RecommendedForYou';
 import { motion } from 'framer-motion';
 import { Truck, RefreshCw, Shield, Headphones } from 'lucide-react';
 
@@ -102,6 +103,9 @@ const Index: React.FC = () => {
         filter="new"
         viewAllLink="/new-arrivals"
       />
+
+      {/* Recommended For You (personalized) */}
+      <RecommendedForYou />
 
       {/* Testimonials */}
       <TestimonialsSection />
