@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useWardrobeMemory } from '@/context/WardrobeMemoryContext';
 import { products } from '@/data/products';
 import ProductCard from '@/components/products/ProductCard';
@@ -34,6 +35,9 @@ const RecommendedForYou: React.FC = () => {
           </h2>
           <p className="text-muted-foreground mt-2 text-sm">
             Based on your browsing style
+          </p>
+          <p className="text-muted-foreground mt-1 text-[10px]">
+            Powered by My Wardrobe Memory · <Link to="/account" className="text-accent hover:underline">Manage privacy</Link>
           </p>
         </motion.div>
 

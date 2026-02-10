@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -57,8 +57,9 @@ const HeroSection: React.FC = () => {
               Shop Collection
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/new-arrivals" className="btn-outline inline-flex items-center justify-center">
-              New Arrivals
+            <Link to="/build-your-look" className="btn-outline inline-flex items-center justify-center gap-2">
+              <Sparkles size={16} />
+              Build Your Look
             </Link>
           </motion.div>
 
