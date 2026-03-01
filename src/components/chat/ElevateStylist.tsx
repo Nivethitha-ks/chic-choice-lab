@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Sparkles, ShoppingBag, ArrowRight } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, ArrowRight } from 'lucide-react';
 import { useWardrobeMemory } from '@/context/WardrobeMemoryContext';
-import ReactMarkdown from 'react-markdown';
+import VoiceInputButton from './VoiceInputButton';
+import ChatMessageContent from './ChatMessageContent';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -197,9 +198,7 @@ const ElevateStylist: React.FC = () => {
                       : 'bg-secondary text-secondary-foreground rounded-bl-sm'
                   }`}>
                     {msg.role === 'assistant' ? (
-                      <div className="prose prose-sm max-w-none [&>p]:m-0 [&>p+p]:mt-1.5 [&>ul]:my-1 [&>ul]:pl-4">
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      </div>
+                      <ChatMessageContent content={msg.content} />
                     ) : msg.content}
                   </div>
                 </div>
@@ -240,6 +239,10 @@ const ElevateStylist: React.FC = () => {
                 onSubmit={e => { e.preventDefault(); sendMessage(input); }}
                 className="flex items-center gap-2"
               >
+                <VoiceInputButton
+                  onTranscript={(text) => { setInput(text); sendMessage(text); }}
+                  disabled={isLoading}
+                />
                 <input
                   ref={inputRef}
                   type="text"
