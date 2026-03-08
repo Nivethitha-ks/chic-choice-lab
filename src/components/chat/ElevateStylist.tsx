@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Sparkles, ArrowRight } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { useWardrobeMemory } from '@/context/WardrobeMemoryContext';
 import VoiceInputButton from './VoiceInputButton';
 import ChatMessageContent from './ChatMessageContent';
+import VoiceWaveform from './VoiceWaveform';
+import { useTTS } from '@/hooks/useTTS';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -29,6 +31,8 @@ const ElevateStylist: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { getStyleProfile } = useWardrobeMemory();
+  const { speak, stop, replay, isSpeaking, voiceMode, toggleMode, isSupported: ttsSupported } = useTTS();
+  const lastSpokenRef = useRef<string>('');
 
   // Auto-greet after 10 seconds
   useEffect(() => {
@@ -48,6 +52,16 @@ const ElevateStylist: React.FC = () => {
   useEffect(() => {
     if (isOpen && inputRef.current) inputRef.current.focus();
   }, [isOpen]);
+
+  // Autoplay voice for the latest assistant message when streaming finishes
+  useEffect(() => {
+    if (isLoading) return;
+    const last = messages[messages.length - 1];
+    if (last?.role === 'assistant' && last.content && last.content !== lastSpokenRef.current) {
+      lastSpokenRef.current = last.content;
+      speak(last.content);
+    }
+  }, [messages, isLoading, speak]);
 
   const streamChat = useCallback(async (allMessages: Message[]) => {
     const wardrobeContext = getStyleProfile();
@@ -109,6 +123,7 @@ const ElevateStylist: React.FC = () => {
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
+    stop(); // Stop any current speech
     const userMsg: Message = { role: 'user', content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
@@ -183,9 +198,28 @@ const ElevateStylist: React.FC = () => {
                   <p className="text-[10px] text-muted-foreground">Your personal fashion AI</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-secondary rounded-full transition-colors">
-                <X size={16} />
-              </button>
+              <div className="flex items-center gap-1">
+                {/* Voice mode toggle */}
+                {ttsSupported && (
+                  <button
+                    onClick={toggleMode}
+                    className="p-1.5 hover:bg-secondary rounded-full transition-colors"
+                    title={voiceMode === 'voice-text' ? 'Switch to text-only' : 'Enable voice responses'}
+                    aria-label={voiceMode === 'voice-text' ? 'Voice enabled, click to disable' : 'Voice disabled, click to enable'}
+                  >
+                    {voiceMode === 'voice-text' ? (
+                      <Volume2 size={16} className="text-accent" />
+                    ) : (
+                      <VolumeX size={16} className="text-muted-foreground" />
+                    )}
+                  </button>
+                )}
+                {/* Speaking indicator */}
+                {isSpeaking && <VoiceWaveform />}
+                <button onClick={() => { stop(); setIsOpen(false); }} className="p-1.5 hover:bg-secondary rounded-full transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
@@ -198,7 +232,20 @@ const ElevateStylist: React.FC = () => {
                       : 'bg-secondary text-secondary-foreground rounded-bl-sm'
                   }`}>
                     {msg.role === 'assistant' ? (
-                      <ChatMessageContent content={msg.content} />
+                      <>
+                        <ChatMessageContent content={msg.content} />
+                        {/* Replay speaker button */}
+                        {ttsSupported && voiceMode === 'voice-text' && (
+                          <button
+                            onClick={() => replay(msg.content)}
+                            className="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground hover:text-accent transition-colors"
+                            aria-label="Replay voice response"
+                          >
+                            <Volume2 size={12} />
+                            <span>Replay</span>
+                          </button>
+                        )}
+                      </>
                     ) : msg.content}
                   </div>
                 </div>
@@ -267,7 +314,7 @@ const ElevateStylist: React.FC = () => {
 
       {/* Floating button */}
       <motion.button
-        onClick={isOpen ? () => setIsOpen(false) : handleOpen}
+        onClick={isOpen ? () => { stop(); setIsOpen(false); } : handleOpen}
         className="fixed bottom-4 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-accent text-accent-foreground flex items-center justify-center hover:bg-accent/90 transition-colors"
         style={{ boxShadow: 'var(--shadow-elevated)' }}
         whileHover={{ scale: 1.05 }}
